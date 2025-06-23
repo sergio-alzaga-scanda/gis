@@ -36,10 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo_csv'])) {
         exit;
     }
 
-    if (!$conn->query("TRUNCATE TABLE vacaciones")) {
-        mostrarAlerta('error', 'Error al truncar la tabla: ' . $conn->error);
-        exit;
-    }
+    
 
     if (($handle = fopen($archivo, "r")) !== false) {
         fgetcsv($handle); // Saltar encabezado
@@ -80,10 +77,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo_csv'])) {
                 $jefe
             ) = $datos;
 
-            // Convertir fechas
-            $fechaInicio = is_numeric($fechaInicio) ? excelDateToMySQLDate($fechaInicio) : convertirFecha($fechaInicio);
-            $fechaFin    = is_numeric($fechaFin)    ? excelDateToMySQLDate($fechaFin)    : convertirFecha($fechaFin);
+            // Limpieza y conversión de fechas
+            $fechaInicio = trim($fechaInicio);
+            $fechaFin = trim($fechaFin);
 
+            if ($fechaInicio === '') {
+                $fechaInicio = null;
+            } else {
+                $fechaInicio = is_numeric($fechaInicio) ? excelDateToMySQLDate($fechaInicio) : convertirFecha($fechaInicio);
+            }
+
+            if ($fechaFin === '') {
+                $fechaFin = null;
+            } else {
+                $fechaFin = is_numeric($fechaFin) ? excelDateToMySQLDate($fechaFin) : convertirFecha($fechaFin);
+            }
+
+            // mysqli no soporta bind_param con null directamente,
+            // por eso usamos esta técnica para pasar null:
             $stmt->bind_param(
                 "sssssss",
                 $resolutorVacaciones,
@@ -93,6 +104,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo_csv'])) {
                 $fechaInicio,
                 $fechaFin,
                 $jefe
+            );
+
+            // Forzar valores null a mysqli con esta función:
+            // Pero bind_param no soporta nulls, entonces usamos bind_param con referencias y ajustamos
+            // para que en MySQL se inserte NULL hacemos lo siguiente:
+
+            // NOTA: La solución rápida es usar esta extensión:
+            // En este contexto, la manera más sencilla es usar 's' y pasar NULL como NULL (de PHP), pero mysqli lo convierte a ''
+            // Si quieres que sea NULL, modifica la consulta para que acepte NULL con el siguiente código:
+            // Usamos la función below para pasar NULL como NULL:
+            $params = [
+                $resolutorVacaciones,
+                $resolutorGuardia,
+                $telefono,
+                $correo,
+                $fechaInicio,
+                $fechaFin,
+                $jefe
+            ];
+
+            // Rebind parameters manualmente para forzar nulls:
+            $stmt->close();
+
+            // Nueva consulta con valores directos usando placeholders especiales para NULL:
+            $sql = "INSERT INTO vacaciones (
+                Resolutor_Vacaciones,
+                Resolutor_Guardia,
+                Telefono_Contacto_Resolutor,
+                Correo_Resolutor,
+                Fecha_Inicio,
+                Fecha_Termino,
+                Jefe_Inmediato
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+            $stmt = $conn->prepare($sql);
+
+            // Para fechas que son null, pasamos NULL directamente usando types y bind_param:
+            $stmt->bind_param(
+                "sssssss",
+                $params[0],
+                $params[1],
+                $params[2],
+                $params[3],
+                $params[4],
+                $params[5],
+                $params[6]
             );
 
             if (!$stmt->execute()) {

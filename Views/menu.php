@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 include("../Controllers/bd.php");
 
 // Validar que el usuario está logueado y tiene tipo_usuario
