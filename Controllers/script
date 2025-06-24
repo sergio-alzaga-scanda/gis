@@ -1,0 +1,70 @@
+CREATE TABLE empleados (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    numero_empleado VARCHAR(10) NOT NULL,
+    nombre VARCHAR(255) NOT NULL,
+    fecha_efectiva DATE NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    correo_electronico VARCHAR(255),
+    ubicacion VARCHAR(100),
+    departamento VARCHAR(100),
+    titulo_puesto VARCHAR(100),
+    empresa_fisica VARCHAR(100),
+    compania VARCHAR(100),
+    tipo_empleado VARCHAR(50),
+    numero_jefe VARCHAR(10),
+    nombre_jefe VARCHAR(255),
+    correo_jefe VARCHAR(255),
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE vacaciones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    Resolutor_Vacaciones VARCHAR(255) NOT NULL,
+    Resolutor_Guardia VARCHAR(255) NOT NULL,
+    Telefono_Contacto_Resolutor VARCHAR(20),
+    Correo_Resolutor VARCHAR(255),
+    Fecha_Inicio DATE,
+    Fecha_Termino DATE,
+    Jefe_Inmediato VARCHAR(255),
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE incidentes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    categoria_es VARCHAR(255),
+    categoria_en VARCHAR(255),
+    subcategoria_es VARCHAR(255),
+    subcategoria_en VARCHAR(255),
+    categoria_tercer_nivel_es VARCHAR(255),
+    categoria_tercer_nivel_en VARCHAR(255),
+    incidente VARCHAR(255),
+    solicitud VARCHAR(255),
+    impacto VARCHAR(100),
+    urgencia VARCHAR(100),
+    severidad VARCHAR(100),
+    grupo_solucion VARCHAR(255),
+    grupo_solucion_en VARCHAR(255),
+    primary_owner VARCHAR(255),
+    responsable_1 VARCHAR(255),
+    correo_1 VARCHAR(255),
+    extension_1 VARCHAR(50),
+    responsable_2 VARCHAR(255),
+    correo_2 VARCHAR(255),
+    extension_2 VARCHAR(50),
+    responsable_3 VARCHAR(255),
+    correo_3 VARCHAR(255),
+    extension_3 VARCHAR(50),
+    gerente_lider VARCHAR(255),
+    servicio VARCHAR(255),
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE usuarios (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    correo VARCHAR(255) NOT NULL UNIQUE,
+    contrasena VARCHAR(255) NOT NULL,
+    tipo_usuario INT NOT NULL DEFAULT 1, -- 1 = normal, >1 = admin u otros roles
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
