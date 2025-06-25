@@ -38,6 +38,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         window.location.href = '../index.php';
     });
 </script>";
+            header("Location: ../index.php");
+exit();
 
         }
 
