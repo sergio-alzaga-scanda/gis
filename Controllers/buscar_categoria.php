@@ -12,21 +12,45 @@ if (isset($_POST['nombre'])) {
     $nombre = trim($_POST['nombre']);
 
     if (strlen($nombre) >= 2) {
-        $busqueda = '%' . $nombre . '%';
+        // Dividir en palabras
+        $palabras = preg_split('/\s+/', $nombre);
 
-        $stmt = $conn->prepare("
+        $whereParts = [];
+        $tipos = '';
+        $parametros = [];
+
+        foreach ($palabras as $palabra) {
+            $like = '%' . $palabra . '%';
+
+            // Cada palabra debe buscarse en todas las columnas, con OR
+            $subCondiciones = [];
+            $columnas = [
+                'categoria_es', 'categoria_en',
+                'subcategoria_es', 'subcategoria_en',
+                'categoria_tercer_nivel_es', 'categoria_tercer_nivel_en'
+            ];
+
+            foreach ($columnas as $col) {
+                $subCondiciones[] = "$col LIKE ?";
+                $tipos .= 's';
+                $parametros[] = $like;
+            }
+
+            // Agrupar por palabra: (col1 LIKE ? OR col2 LIKE ? ...)
+            $whereParts[] = '(' . implode(' OR ', $subCondiciones) . ')';
+        }
+
+        // Combinar todas las condiciones: (word1 matches) AND (word2 matches) ...
+        $whereClause = implode(' AND ', $whereParts);
+
+        $query = "
             SELECT id, categoria_es, categoria_en, subcategoria_es, subcategoria_en, categoria_tercer_nivel_es, categoria_tercer_nivel_en
             FROM incidentes 
-            WHERE categoria_es LIKE ? 
-                OR categoria_en LIKE ? 
-                OR subcategoria_es LIKE ? 
-                OR subcategoria_en LIKE ? 
-                OR categoria_tercer_nivel_es LIKE ? 
-                OR categoria_tercer_nivel_en LIKE ?
-        ");
+            WHERE $whereClause
+        ";
 
-        // Como hay 6 parámetros iguales, repetimos $busqueda 6 veces
-        $stmt->bind_param("ssssss", $busqueda, $busqueda, $busqueda, $busqueda, $busqueda, $busqueda);
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param($tipos, ...$parametros);
         $stmt->execute();
         $resultado = $stmt->get_result();
 

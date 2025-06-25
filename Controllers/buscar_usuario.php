@@ -12,12 +12,31 @@ if (isset($_POST['nombre'])) {
     $nombre = trim($_POST['nombre']);
 
     if (strlen($nombre) >= 2) {
-        $busqueda = '%' . $nombre . '%';
+        // Dividir en palabras individuales
+        $palabras = preg_split('/\s+/', $nombre);
+        
+        // Construir cláusula WHERE dinámica
+        $whereClause = '';
+        $tipos = '';
+        $parametros = [];
 
-        $stmt = $conn->prepare("SELECT id, nombre, fecha_efectiva, correo_electronico, empresa_fisica 
-                                FROM empleados 
-                                WHERE nombre LIKE ?");
-        $stmt->bind_param("s", $busqueda);
+        foreach ($palabras as $palabra) {
+            $whereClause .= "nombre LIKE ? AND ";
+            $tipos .= 's';
+            $parametros[] = '%' . $palabra . '%';
+        }
+
+        // Eliminar el último ' AND '
+        $whereClause = rtrim($whereClause, ' AND ');
+
+        $query = "SELECT id, nombre, fecha_efectiva, correo_electronico, empresa_fisica 
+                  FROM empleados 
+                  WHERE $whereClause";
+
+        $stmt = $conn->prepare($query);
+
+        // Asociar parámetros dinámicamente
+        $stmt->bind_param($tipos, ...$parametros);
         $stmt->execute();
         $resultado = $stmt->get_result();
 
