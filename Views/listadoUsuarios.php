@@ -27,7 +27,8 @@ $resultado = $conn->query("SELECT * FROM usuarios");
   <div class="d-flex justify-content-start gap-2 mt-3">
       <a href="../Views/nuevoUsuario.php" class="btn btn-success mb-3">Nuevo Usuario</a>
       <a href="menu.php" class="btn btn-secondary mb-3">Volver</a>
-    </div>
+  </div>
+
   <table id="usuarios" class="table table-bordered table-striped">
     <thead>
       <tr>
@@ -44,9 +45,13 @@ $resultado = $conn->query("SELECT * FROM usuarios");
         <td><?= htmlspecialchars($row['correo']) ?></td>
         <td><?= $row['tipo_usuario'] == 1 ? 'Administrador' : 'Agente' ?></td>
         <td>
-          <a href="editarUsuario.php?id=<?= $row['id_usuario'] ?>" class="btn btn-primary btn-sm">Editar</a>
-          <a href="../Controllers/eliminarUsuario.php?id=<?= $row['id_usuario'] ?>" class="btn btn-danger btn-sm"
-             onclick="return confirm('¿Estás seguro de eliminar este usuario?');">Eliminar</a>
+          <?php if ($row['tipo_usuario'] != 1): ?>
+            <a href="editarUsuario.php?id=<?= $row['id_usuario'] ?>" class="btn btn-primary btn-sm">Editar</a>
+            <a href="../Controllers/eliminarUsuario.php?id=<?= $row['id_usuario'] ?>" class="btn btn-danger btn-sm"
+               onclick="return confirm('¿Estás seguro de eliminar este usuario?');">Eliminar</a>
+          <?php else: ?>
+            <span class="text-muted">No disponible</span>
+          <?php endif; ?>
         </td>
       </tr>
     <?php endwhile; ?>
@@ -70,28 +75,34 @@ $resultado = $conn->query("SELECT * FROM usuarios");
   });
 </script>
 
-  <?php if (isset($_GET['deleted'])): ?>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      <?php if ($_GET['deleted'] == '1'): ?>
-        Swal.fire({
-          icon: 'success',
-          title: 'Eliminado',
-          text: 'El usuario fue eliminado correctamente.',
-          timer: 2000,
-          showConfirmButton: false
-        });
-      <?php else: ?>
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'No se pudo eliminar el usuario.',
-          timer: 3000,
-          showConfirmButton: true
-        });
-      <?php endif; ?>
-    });
-  </script>
-  <?php endif; ?>
+<?php if (isset($_GET['deleted'])): ?>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    <?php if (isset($_GET['error']) && $_GET['error'] === 'admin'): ?>
+      Swal.fire({
+        icon: 'warning',
+        title: 'Acción no permitida',
+        text: 'No puedes eliminar un usuario con rol de Administrador.',
+        confirmButtonText: 'Entendido'
+      });
+    <?php elseif ($_GET['deleted'] == '1'): ?>
+      Swal.fire({
+        icon: 'success',
+        title: 'Eliminado',
+        text: 'El usuario fue eliminado correctamente.',
+        timer: 2000,
+        showConfirmButton: false
+      });
+    <?php else: ?>
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudo eliminar el usuario.',
+        confirmButtonText: 'Cerrar'
+      });
+    <?php endif; ?>
+  });
+</script>
+<?php endif; ?>
 </body>
 </html>
