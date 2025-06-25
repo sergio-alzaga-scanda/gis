@@ -1,5 +1,16 @@
 <?php
 session_start();
+$localidad = isset($_GET['localidad']) ? $_GET['localidad'] : '';
+include("../Controllers/bd.php");
+$sql = "SELECT * FROM grupos_soporte";
+if ($localidad !== '') {
+    $stmt = $conn->prepare("SELECT * FROM grupos_soporte WHERE localidad = ?");
+    $stmt->bind_param("s", $localidad);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+} else {
+    $resultado = $conn->query($sql);
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -26,27 +37,45 @@ session_start();
     <a href="../Views/menu.php" class="btn btn-secondary me-3 btn-volver">Volver</a>
     <?php endif; ?>
     <button id="verSeleccionBtn" class="btn btn-success me-3">Ver Selección</button>
+    <button id="btnMexico" class="btn btn-dark me-2">Directorio México</button>
+    <button id="btnEuropa" class="btn btn-dark me-3">Directorio Europa</button>
     <button id="cerrarSesionBtn" class="btn btn-danger">Cerrar sesión</button>
-    <div style="background-color: #b0f5d8; padding-right: 10px; padding-left: 10px; padding-bottom: 10px;">
+<br><br>
+    <div style="background-color: #b0f5d8; padding: 10px;">
         <h2 class="mt-4">Búsqueda de Empleados</h2>
-    <form id="formBusqueda" class="mb-4 d-flex" role="search">
-        <input type="text" class="form-control me-2" name="nombre" id="nombre" placeholder="Escribe el nombre a buscar" required>
-        <button type="submit" class="btn btn-dark">Buscar</button>
-    </form>
+        <form id="formBusqueda" class="mb-4 d-flex" role="search">
+            <input type="text" class="form-control me-2" name="nombre" id="nombre" placeholder="Escribe el nombre a buscar" required>
+            <button type="submit" class="btn btn-dark">Buscar</button>
+        </form>
 
-    <table class="table table-striped" id="tablaResultados">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Fecha Efectiva</th>
-                <th>Correo Electrónico</th>
-                <th>Empresa Física</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+        <table class="table table-striped" id="tablaResultados">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Fecha Efectiva</th>
+                    <th>Correo Electrónico</th>
+                    <th>Empresa Física</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
-    
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="directorioModal" tabindex="-1" aria-labelledby="directorioModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="directorioModalLabel">Directorio</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body" id="contenidoDirectorio">
+        Cargando...
+      </div>
+    </div>
+  </div>
+</div>
 </div>
 <div class="container mt-5">
     <!-- Sección de Búsqueda de Categorías -->
@@ -486,5 +515,44 @@ document.getElementById('btnSeleccionarCategoria').addEventListener('click', fun
 //include("../Views/resolutor_information.php");
 include("../Views/vacaciones.php");
 ?>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.getElementById('btnMexico').addEventListener('click', function () {
+    cargarDirectorio('Mexico');
+});
+document.getElementById('btnEuropa').addEventListener('click', function () {
+    cargarDirectorio('Europa');
+});
+
+
+function cargarDirectorio(localidad) {
+    fetch(`../Controllers/directorio_ajax.php?localidad=${encodeURIComponent(localidad)}`)
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('contenidoDirectorio').innerHTML = data;
+
+            // Mostrar el modal
+            let myModal = new bootstrap.Modal(document.getElementById('directorioModal'));
+            myModal.show();
+
+            // Esperar a que el modal esté visible y luego aplicar DataTable
+            setTimeout(() => {
+                if ($.fn.DataTable.isDataTable('#tablaDirectorio')) {
+                    $('#tablaDirectorio').DataTable().destroy();
+                }
+                $('#tablaDirectorio').DataTable({
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+                    },
+                    responsive: true
+                });
+            }, 300); // pequeño delay para asegurar que el DOM esté listo
+        })
+        .catch(err => {
+            document.getElementById('contenidoDirectorio').innerHTML = 'Error al cargar el directorio.';
+        });
+}
+
+</script>
 </body>
 </html>

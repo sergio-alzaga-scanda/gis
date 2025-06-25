@@ -47,9 +47,10 @@ if ($_SESSION['tipo_usuario'] =! 1) {
         <button id="verSeleccionBtn" class="btn btn-success text-white btn-lg">Ver Selección</button>
         <?php if ($_SESSION['tipo_usuario'] < 2): ?>
             
+            <a href="cargarDirectorio.php" class="btn btn-dark text-white btn-lg">Registro de Directorio</a>
             <a href="update_user_information.php" class="btn btn-dark text-white btn-lg">Update User Information</a>
             <a href="update_resolutor_information.php" class="btn btn-dark text-white btn-lg">Update Resolutor Information</a>
-            <a href="cargarVacaciones.php" class="btn btn-dark text-white btn-lg">Registro de vacaciones</a>
+            <a href="cargarVacaciones.php" class="btn btn-dark text-white btn-lg">Registro de Vacaciones</a>
         <?php endif; ?>
 
         

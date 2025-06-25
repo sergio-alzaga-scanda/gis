@@ -12,7 +12,7 @@
 </head>
 <body>
 <div class="container mt-5" style="background-color: #f5eeb0;  padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px;" >
-    <h2 class="mb-4">Resolutores en Vacaciones y Gurdias</h2>
+    <h2 class="mb-4">Resolutores en Vacaciones y Guardias</h2>
 
     <div class="accordion" id="accordionVacaciones">
         <div class="accordion-item">
