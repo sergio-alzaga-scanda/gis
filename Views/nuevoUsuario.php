@@ -38,11 +38,7 @@
         </select>
       </div>
 
-      <!-- Fecha de creación (solo lectura) -->
-      <div class="mb-3">
-        <label for="fecha_creacion" class="form-label">Fecha de creación</label>
-        <input type="datetime-local" class="form-control" id="fecha_creacion" name="fecha_creacion" readonly />
-      </div>
+      
 
       <button type="submit" class="btn btn-primary">Enviar</button>
     </form>
