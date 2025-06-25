@@ -31,7 +31,7 @@ if (!$stmt) {
     mostrar_alerta("Error", "Error en la preparación de la consulta: " . $conn->error, "error", false);
     exit;
 }
-$stmt->bind_param("sssi", $nombre, $correo, $contrasena_hash, $tipo_usuario);
+$stmt->bind_param("sssi", $nombre, $correo, $contrasena, $tipo_usuario);
 
 try {
     $stmt->execute();
