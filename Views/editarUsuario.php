@@ -1,3 +1,4 @@
+<!-- archivo editarUsuario.php -->
 <?php
 session_start();
 if (!isset($_SESSION['usuario'])) {
@@ -22,7 +23,6 @@ if (!$usuario) {
     exit;
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -58,6 +58,16 @@ if (!$usuario) {
     <div class="d-flex justify-content-start gap-2 mt-3">
       <button type="button" class="btn btn-primary" id="btnConfirmar">Actualizar</button>
       <a href="listadoUsuarios.php" class="btn btn-secondary">Volver</a>
+
+      <?php if ($usuario['tipo_usuario'] != 1): ?>
+        <a href="../Controllers/eliminarUsuario.php?id=<?= $usuario['id_usuario'] ?>" 
+           class="btn btn-danger" 
+           onclick="return confirm('¿Estás seguro de eliminar este usuario?');">
+           Eliminar
+        </a>
+      <?php else: ?>
+        <button class="btn btn-danger" disabled title="No puedes eliminar un administrador">Eliminar</button>
+      <?php endif; ?>
     </div>
   </form>
 </div>

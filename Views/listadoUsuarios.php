@@ -9,7 +9,6 @@ include("../Controllers/bd.php");
 
 $resultado = $conn->query("SELECT * FROM usuarios");
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
