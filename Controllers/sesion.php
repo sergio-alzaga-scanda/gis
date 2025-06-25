@@ -26,17 +26,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             exit();
         } else {
-            echo "<script>
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'Correo o contraseña incorrectos.',
-                        icon: 'error',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        window.location.href = '../index.php';
-                    });
-                  </script>";
+            echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+<script>
+    Swal.fire({
+        title: 'Error',
+        text: 'Correo o contraseña incorrectos.',
+        icon: 'error',
+        showConfirmButton: false,
+        timer: 1500
+    }).then(() => {
+        window.location.href = '../index.php';
+    });
+</script>";
+
         }
 
         $stmt->close();
