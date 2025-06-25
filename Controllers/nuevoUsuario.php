@@ -68,7 +68,7 @@ function mostrar_alerta($titulo, $mensaje, $icono, $exito) {
         }).then((result) => {
             if (result.isConfirmed) {
                 <?php if ($exito): ?>
-                    window.location.href = "../Views/menu.php";
+                    window.location.href = "../Views/listadoUsuarios.php";
                 <?php else: ?>
                     history.back();
                 <?php endif; ?>

@@ -16,15 +16,19 @@ $resultado = $conn->query("SELECT * FROM usuarios");
   <meta charset="UTF-8" />
   <title>Listado de Usuarios</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <!-- DataTables CSS -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css" />
 </head>
 <body>
 <div class="container mt-5">
   <h2>Listado de Usuarios</h2>
-  <a href="../Views/nuevoUsuario.php" class="btn btn-success mb-3">Nuevo Usuario</a>
   
+  <div class="d-flex justify-content-start gap-2 mt-3">
+      <a href="../Views/nuevoUsuario.php" class="btn btn-success mb-3">Nuevo Usuario</a>
+      <a href="menu.php" class="btn btn-secondary mb-3">Volver</a>
+    </div>
   <table id="usuarios" class="table table-bordered table-striped">
     <thead>
       <tr>
@@ -66,5 +70,29 @@ $resultado = $conn->query("SELECT * FROM usuarios");
     });
   });
 </script>
+
+  <?php if (isset($_GET['deleted'])): ?>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      <?php if ($_GET['deleted'] == '1'): ?>
+        Swal.fire({
+          icon: 'success',
+          title: 'Eliminado',
+          text: 'El usuario fue eliminado correctamente.',
+          timer: 2000,
+          showConfirmButton: false
+        });
+      <?php else: ?>
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo eliminar el usuario.',
+          timer: 3000,
+          showConfirmButton: true
+        });
+      <?php endif; ?>
+    });
+  </script>
+  <?php endif; ?>
 </body>
 </html>

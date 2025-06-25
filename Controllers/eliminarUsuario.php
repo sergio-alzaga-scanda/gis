@@ -8,13 +8,19 @@ include("bd.php");
 
 $id = $_GET['id'] ?? '';
 if (!$id) {
-    die("ID no válido");
+    header("Location: ../Views/listadoUsuarios.php?deleted=0");
+    exit;
 }
 
-$stmt = $conn->prepare("DELETE FROM usuarios WHERE id = ?");
+$stmt = $conn->prepare("DELETE FROM usuarios WHERE id_usuario = ?");
 $stmt->bind_param("i", $id);
-$stmt->execute();
+$success = $stmt->execute();
 $stmt->close();
 $conn->close();
 
-header("Location: ../Views/listadoUsuarios.php");
+if ($success) {
+    header("Location: ../Views/listadoUsuarios.php?deleted=1");
+} else {
+    header("Location: ../Views/listadoUsuarios.php?deleted=0");
+}
+exit;

@@ -39,8 +39,11 @@
       </div>
 
       
-
+      <div class="d-flex justify-content-start gap-2 mt-3">
       <button type="submit" class="btn btn-primary">Enviar</button>
+      <a href="listadoUsuarios.php" class="btn btn-secondary">Volver</a>
+    </div>
+      
     </form>
   </div>
 
