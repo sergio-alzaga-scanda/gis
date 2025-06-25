@@ -28,7 +28,7 @@ session_start();
                     </div>
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-success">Cargar</button>
-                        <a href="../docs/resoluciones.csv" download class="btn btn-outline-primary">Descargar plantilla</a>
+                        <a href="../docs/incidentes.csv" download class="btn btn-outline-primary">Descargar plantilla</a>
                         <a href="../Views/menu.php" class="btn btn-secondary">Volver</a>
                     </div>
                 </form>
