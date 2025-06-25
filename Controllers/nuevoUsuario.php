@@ -24,7 +24,7 @@ if (!in_array($tipo_usuario, ['1', '2'])) {
     exit;
 }
 
-$contrasena_hash = password_hash($contrasena, PASSWORD_DEFAULT);
+
 
 $stmt = $conn->prepare("INSERT INTO usuarios (nombre, correo, contrasena, tipo_usuario) VALUES (?, ?, ?, ?)");
 if (!$stmt) {

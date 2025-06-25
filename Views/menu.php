@@ -46,7 +46,7 @@ if ($_SESSION['tipo_usuario'] =! 1) {
         <a href="user_information.php" class="btn btn-primary btn-lg">Consultar</a>
         <button id="verSeleccionBtn" class="btn btn-success text-white btn-lg">Ver Selección</button>
         <?php if ($_SESSION['tipo_usuario'] < 2): ?>
-            <a href="nuevoUsuario.php" class="btn btn-dark text-white btn-lg">Registro de Usuarios</a>
+            <a href="listadoUsuarios.php" class="btn btn-dark text-white btn-lg">Gestión de Usuarios</a>
             <a href="cargarDirectorio.php" class="btn btn-dark text-white btn-lg">Registro de Directorio</a>
             <a href="update_user_information.php" class="btn btn-dark text-white btn-lg">Update User Information</a>
             <a href="update_resolutor_information.php" class="btn btn-dark text-white btn-lg">Update Resolutor Information</a>

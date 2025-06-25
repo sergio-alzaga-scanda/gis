@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Formulario de Usuario</title>
+  <title>Registro de nuevo usuario</title>
   <!-- Bootstrap CSS CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body>
   <div class="container mt-5">
-    <h2>Formulario de Usuario</h2>
+    <h2>Registro de nuevo usuario</h2>
     <form method="post" action="../Controllers/nuevoUsuario.php" enctype="multipart/form-data" id="formulario">
       <!-- Nombre -->
       <div class="mb-3">
@@ -26,7 +26,7 @@
       <!-- Contraseña -->
       <div class="mb-3">
         <label for="contrasena" class="form-label">Contraseña</label>
-        <input type="password" class="form-control" id="contrasena" name="contrasena" maxlength="255" required />
+        <input type="text" class="form-control" id="contrasena" name="contrasena" maxlength="255" required />
       </div>
 
       <!-- Tipo de usuario -->
