@@ -89,12 +89,9 @@ if ($localidad !== '') {
     <table class="table table-striped" id="tablaResultadosCategorias">
         <thead>
             <tr>
-                <th>Categorías ES</th><th>Categorías EN</th>
-                <th>Grupo resolutor</th>
-                <th>Severidad</th>
-                <th>Resolutor 1</th>
-                <th>Resolutor 2</th>
-                <th>Resolutor 3</th>
+                <th>Categoría ES</th><th>Categoría EN</th>
+                <th>Subcategoría ES</th><th>Subcategoría EN</th>
+                <th>3er Nivel ES</th><th>3er Nivel EN</th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -434,26 +431,16 @@ document.getElementById('formBusquedaCategoria').addEventListener('submit', func
             Swal.fire('Resultado', data.mensaje, 'info');
         } else {
             data.forEach(cat => {
-    const categoriaES = `${cat.categoria_es || ''} / ${cat.subcategoria_es || ''} / ${cat.categoria_tercer_nivel_es || ''}`;
-    const categoriaEN = `${cat.categoria_en || ''} / ${cat.subcategoria_en || ''} / ${cat.categoria_tercer_nivel_en || ''}`;
-
-    const resolutor1 = cat.responsable_1 ? `${cat.responsable_1}<br>(${cat.correo_1 || ''})` : '';
-    const resolutor2 = cat.responsable_2 ? `${cat.responsable_2}<br>(${cat.correo_2 || ''})` : '';
-    const resolutor3 = cat.responsable_3 ? `${cat.responsable_3}<br>(${cat.correo_3 || ''})` : '';
-
-    const fila = document.createElement('tr');
-    fila.innerHTML = `
-        <td><a href="#" class="detalle-link-cat" data-id="${cat.id}">${categoriaES}</a></td>
-        
-        <td>${categoriaEN}</td>
-        <td>${cat.grupo_solucion || ''}</td>
-        <td>${cat.severidad || ''}</td>
-        <td>${resolutor1}</td>
-        <td>${resolutor2}</td>
-        <td>${resolutor3}</td>
-    `;
-    tbody.appendChild(fila);
-});
+                const fila = document.createElement('tr');
+                fila.innerHTML = `
+                    <td><a href="#" class="detalle-link-cat" data-id="${cat.id}">${cat.categoria_es || ''}</a></td>
+                    <td>${cat.categoria_en || ''}</td>
+                    <td>${cat.subcategoria_es || ''}</td>
+                    <td>${cat.subcategoria_en || ''}</td>
+                    <td>${cat.categoria_tercer_nivel_es || ''}</td>
+                    <td>${cat.categoria_tercer_nivel_en || ''}</td>`;
+                tbody.appendChild(fila);
+            });
 
             // Mostrar detalles de la categoría al hacer clic
             document.querySelectorAll('.detalle-link-cat').forEach(link => {
