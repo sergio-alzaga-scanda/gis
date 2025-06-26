@@ -135,44 +135,23 @@ document.getElementById('formBusqueda').addEventListener('submit', function(e) {
         body: 'nombre=' + encodeURIComponent(nombre)
     })
     .then(res => res.json())
-   .then(data => {
-    const tbody = document.querySelector('#tablaResultados tbody');
-    tbody.innerHTML = '';
-
-    // Cambiar los encabezados de tabla
-    document.querySelector('#tablaResultados thead').innerHTML = `
-        <tr>
-            <th>Categoría (ES)</th>
-            <th>Category (EN)</th>
-            <th>Grupo Solución</th>
-            <th>Severidad</th>
-            <th>Resolutor</th>
-        </tr>
-    `;
-
-    if (data.mensaje) {
-        Swal.fire('Resultado', data.mensaje, 'info');
-    } else {
-        data.forEach(cat => {
-            const categoriaES = `${cat.categoria_es || ''} / ${cat.subcategoria_es || ''} / ${cat.categoria_tercer_nivel_es || ''}`;
-            const categoriaEN = `${cat.categoria_en || ''} / ${cat.subcategoria_en || ''} / ${cat.categoria_tercer_nivel_en || ''}`;
-
-            const resolutores = [
-                cat.responsable_1 ? `${cat.responsable_1} (${cat.correo_1 || ''})` : '',
-                cat.responsable_2 ? `${cat.responsable_2} (${cat.correo_2 || ''})` : '',
-                cat.responsable_3 ? `${cat.responsable_3} (${cat.correo_3 || ''})` : ''
-            ].filter(r => r).join('<br>');
-
-            const fila = document.createElement('tr');
-            fila.innerHTML = `
-                <td><a href="#" class="detalle-link" data-id="${cat.id}">${categoriaES}</a></td>
-                <td>${categoriaEN}</td>
-                <td>${cat.grupo_solucion || ''}</td>
-                <td>${cat.severidad || ''}</td>
-                <td>${resolutores}</td>
-            `;
-            tbody.appendChild(fila);
-        });
+    .then(data => {
+        const tbody = document.querySelector('#tablaResultados tbody');
+        tbody.innerHTML = '';
+        if (data.mensaje) {
+            Swal.fire('Resultado', data.mensaje, 'info');
+        } else {
+            data.forEach(cat => {
+                const fila = document.createElement('tr');
+                fila.innerHTML = `
+                    <td><a href="#" class="detalle-link" data-id="${cat.id}">${cat.categoria_es || ''}</a></td>
+                    <td>${cat.categoria_en || ''}</td>
+                    <td>${cat.subcategoria_es || ''}</td>
+                    <td>${cat.subcategoria_en || ''}</td>
+                    <td>${cat.categoria_tercer_nivel_es || ''}</td>
+                    <td>${cat.categoria_tercer_nivel_en || ''}</td>`;
+                tbody.appendChild(fila);
+            });
 
             document.querySelectorAll('.detalle-link').forEach(link => {
                 link.addEventListener('click', function(e) {
