@@ -7,12 +7,10 @@ if (!isset($_SESSION['usuario'])) {
 
 include("../Controllers/bd.php");
 
-// Buscar por categoría (es/en) y subcategorías y tercer nivel
 if (isset($_POST['nombre'])) {
     $nombre = trim($_POST['nombre']);
 
     if (strlen($nombre) >= 2) {
-        // Dividir en palabras
         $palabras = preg_split('/\s+/', $nombre);
 
         $whereParts = [];
@@ -22,29 +20,40 @@ if (isset($_POST['nombre'])) {
         foreach ($palabras as $palabra) {
             $like = '%' . $palabra . '%';
 
-            // Cada palabra debe buscarse en todas las columnas, con OR
-            $subCondiciones = [];
+            // Ampliar columnas para buscar en todas
             $columnas = [
                 'categoria_es', 'categoria_en',
                 'subcategoria_es', 'subcategoria_en',
-                'categoria_tercer_nivel_es', 'categoria_tercer_nivel_en'
+                'categoria_tercer_nivel_es', 'categoria_tercer_nivel_en',
+                'incidente', 'solicitud', 'impacto', 'urgencia', 'severidad',
+                'grupo_solucion', 'grupo_solucion_en', 'primary_owner',
+                'responsable_1', 'correo_1', 'extension_1',
+                'responsable_2', 'correo_2', 'extension_2',
+                'responsable_3', 'correo_3', 'extension_3',
+                'gerente_lider', 'servicio'
             ];
 
+            $subCondiciones = [];
             foreach ($columnas as $col) {
                 $subCondiciones[] = "$col LIKE ?";
                 $tipos .= 's';
                 $parametros[] = $like;
             }
 
-            // Agrupar por palabra: (col1 LIKE ? OR col2 LIKE ? ...)
             $whereParts[] = '(' . implode(' OR ', $subCondiciones) . ')';
         }
 
-        // Combinar todas las condiciones: (word1 matches) AND (word2 matches) ...
         $whereClause = implode(' AND ', $whereParts);
 
         $query = "
-            SELECT id, categoria_es, categoria_en, subcategoria_es, subcategoria_en, categoria_tercer_nivel_es, categoria_tercer_nivel_en
+            SELECT id, categoria_es, categoria_en, subcategoria_es, subcategoria_en,
+                   categoria_tercer_nivel_es, categoria_tercer_nivel_en,
+                   incidente, solicitud, impacto, urgencia, severidad,
+                   grupo_solucion, grupo_solucion_en, primary_owner,
+                   responsable_1, correo_1, extension_1,
+                   responsable_2, correo_2, extension_2,
+                   responsable_3, correo_3, extension_3,
+                   gerente_lider, servicio, fecha_registro
             FROM incidentes 
             WHERE $whereClause
         ";
