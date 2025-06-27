@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo_csv'])) {
 
         while (($datos = fgetcsv($handle, 1000, ",")) !== false) {
             if (count($datos) < 7) {
-                fwrite($logfile, "Línea con datos insuficientes: " . implode(",", $datos) . "\n");
+                #fwrite($logfile, "Línea con datos insuficientes: " . implode(",", $datos) . "\n");
                 $errores++;
                 continue;
             }
