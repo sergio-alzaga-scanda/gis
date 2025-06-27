@@ -74,10 +74,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo_csv'])) {
             );
 
             if (!$stmt->execute()) {
-                fwrite($logfile, "Error al insertar fila: " . implode(" | ", $datos) . " - " . $stmt->error . "\n");
+                //fwrite($logfile, "Error al insertar fila: " . implode(" | ", $datos) . " - " . $stmt->error . "\n");
                 $errores++;
             } else {
-                fwrite($logfile, "Fila insertada correctamente.\n");
+                //fwrite($logfile, "Fila insertada correctamente.\n");
                 $exitos++;
             }
         }
