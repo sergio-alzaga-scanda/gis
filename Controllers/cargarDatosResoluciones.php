@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo_csv'])) {
         }
 
         fclose($handle);
-        fclose($logfile);
+        //fclose($logfile);
         $stmt->close();
         $conn->close();
 
