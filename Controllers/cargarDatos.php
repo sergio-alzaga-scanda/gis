@@ -53,13 +53,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo_csv'])) {
 
         while (($datos = fgetcsv($handle, 1000, ",")) !== false) {
             if (count($datos) < 14) {
-                fwrite($logfile, "Línea con datos insuficientes: " . implode(",", $datos) . "\n");
+                //fwrite($logfile, "Línea con datos insuficientes: " . implode(",", $datos) . "\n");
                 $errores++;
                 continue;
             }
 
             if (strlen($datos[0]) > 10) {
-                fwrite($logfile, "Número de empleado muy largo: " . $datos[0] . "\n");
+                //fwrite($logfile, "Número de empleado muy largo: " . $datos[0] . "\n");
                 $errores++;
                 continue;
             }
@@ -88,16 +88,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo_csv'])) {
             );
 
             if (!$stmt->execute()) {
-                fwrite($logfile, "Error al insertar fila: " . implode(",", $datos) . " - " . $stmt->error . "\n");
+                //fwrite($logfile, "Error al insertar fila: " . implode(",", $datos) . " - " . $stmt->error . "\n");
                 $errores++;
             } else {
-                fwrite($logfile, "Fila insertada correctamente.\n");
+                //fwrite($logfile, "Fila insertada correctamente.\n");
                 $exitos++;
             }
         }
 
         fclose($handle);
-        fclose($logfile);
+        //fclose($logfile);
         $stmt->close();
         $conn->close();
 
