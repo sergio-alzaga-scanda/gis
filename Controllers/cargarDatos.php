@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo_csv'])) {
             exit;
         }
 
-        $logfile = fopen("inserciones_log.txt", "a");
+        //$logfile = fopen("inserciones_log.txt", "a");
         $exitos = 0;
         $errores = 0;
 
