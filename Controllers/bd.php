@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
 $username = "root";
-$password = "Melco154.,";
+$password = ""; // ← sin contraseña
 $database = "gis_db";
 $port = 3306;
 
@@ -12,7 +12,8 @@ if ($conn->connect_error) {
 }
 
 $conn->set_charset("utf8");
-// Datos de conexión
+
+
 //$servername = "localhost"; // Nombre del servidor
 //$port = 3307;              // Puerto MySQL personalizado
 //$username = "root";        // Nombre de usuario
