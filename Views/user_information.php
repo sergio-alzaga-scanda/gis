@@ -444,7 +444,7 @@ document.getElementById('formBusquedaCategoria').addEventListener('submit', func
 
     const fila = document.createElement('tr');
     fila.innerHTML = `
-        <td><a href="#" class="detalle-link" data-id="${cat.id}">${categoriaES}</a></td>
+        <td><a href="#" class="detalle-link-cat" data-id="${cat.id}">${categoriaES}</a></td>
         <td>${categoriaEN}</td>
         <td>${cat.grupo_solucion || ''}</td>
         <td>${cat.severidad || ''}</td>
