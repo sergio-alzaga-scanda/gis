@@ -444,7 +444,7 @@ document.getElementById('formBusquedaCategoria').addEventListener('submit', func
 
     const fila = document.createElement('tr');
     fila.innerHTML = `
-        <td><a href="#" class="detalle-link-cat" data-id="${cat.id}">${categoriaES}</a></td>
+        <td><a href="#" class=".detalle-link-cat" data-id="${cat.id}">${categoriaES}</a></td>
         <td>${categoriaEN}</td>
         <td>${cat.grupo_solucion || ''}</td>
         <td>${cat.severidad || ''}</td>
@@ -566,6 +566,16 @@ function cargarDirectorio(localidad) {
         });
 }
 
+</script>
+<script>
+$(document).ready(function() {
+    $('#tablaResultadosCategorias').DataTable({
+        responsive: true,
+        language: {
+            url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+        }
+    });
+});
 </script>
 </body>
 </html>
