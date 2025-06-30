@@ -44,14 +44,17 @@ if ($_SESSION['tipo_usuario'] =! 1) {
 
     <div class="d-grid gap-3 col-12 col-md-6 mx-auto">
         <a href="user_information.php" class="btn btn-primary btn-lg">Consultar</a>
-        <button id="verSeleccionBtn" class="btn btn-success text-white btn-lg">Ver Selección</button>
-        <?php if ($_SESSION['tipo_usuario'] < 2): ?>
-            <a href="listadoUsuarios.php" class="btn btn-dark text-white btn-lg">Gestión de Usuarios</a>
-            <a href="cargarDirectorio.php" class="btn btn-dark text-white btn-lg">Registro de Directorio</a>
-            <a href="update_user_information.php" class="btn btn-dark text-white btn-lg">Update User Information</a>
-            <a href="update_resolutor_information.php" class="btn btn-dark text-white btn-lg">Update Resolutor Information</a>
-            <a href="cargarVacaciones.php" class="btn btn-dark text-white btn-lg">Registro de Vacaciones</a>
-        <?php endif; ?>
+<button id="verSeleccionBtn" class="btn btn-success text-white btn-lg">Ver Selección</button>
+
+<?php if ($_SESSION['tipo_usuario'] < 2): ?>
+    <a href="listadoUsuarios.php" class="btn btn-dark text-white btn-lg">Gestión de Usuarios</a>
+    <a href="listadoResponsables.php" class="btn btn-secondary text-white btn-lg">Responsables del Negocio</a>
+    <a href="cargarDirectorio.php" class="btn btn-dark text-white btn-lg">Directorio</a>
+    <a href="update_user_information.php" class="btn btn-secondary text-white btn-lg">Empleados</a>
+    <a href="update_resolutor_information.php" class="btn btn-dark text-white btn-lg">Resolutores</a>
+    <a href="cargarVacaciones.php" class="btn btn-secondary text-white btn-lg">Registro de Vacaciones</a>
+<?php endif; ?>
+
 
         
 
