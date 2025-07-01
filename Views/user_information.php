@@ -39,6 +39,7 @@ if ($localidad !== '') {
     <button id="verSeleccionBtn" class="btn btn-success me-3">Ver Selección</button>
     <button id="btnMexico" class="btn btn-dark me-2">Directorio México</button>
     <button id="btnEuropa" class="btn btn-dark me-3">Directorio Europa</button>
+    <button id="btnConsultores" class="btn btn-dark me-3">Consultores del negocio</button>
     <button id="cerrarSesionBtn" class="btn btn-danger">Cerrar sesión</button>
 <br><br>
     <div style="background-color: #b0f5d8; padding: 10px;">
@@ -95,6 +96,7 @@ if ($localidad !== '') {
                 <th>Resolutor 1</th>
                 <th>Resolutor 2</th>
                 <th>Resolutor 3</th>
+                <th>Servicio</th>
                 		
             </tr>
         </thead>
@@ -136,6 +138,20 @@ if ($localidad !== '') {
       <div class="modal-body" id="modalContenidoCategoria"></div>
       <div class="modal-footer">
         <button type="button" class="btn btn-dark" id="btnSeleccionarCategoria">Seleccionar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal para Responsables de Negocio -->
+<div class="modal fade" id="responsablesModal" tabindex="-1" aria-labelledby="responsablesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="responsablesLabel">Consultores de Negocio</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body" id="contenidoResponsables">
+        <!-- Aquí se cargará la tabla desde responsables_ajax.php -->
       </div>
     </div>
   </div>
@@ -451,6 +467,7 @@ document.getElementById('formBusquedaCategoria').addEventListener('submit', func
         <td>${resolutor1}</td>
         <td>${resolutor2}</td>
         <td>${resolutor3}</td>
+        <td>${cat.servicio}</td>
     `;
     tbody.appendChild(fila);
 });
@@ -536,6 +553,37 @@ document.getElementById('btnMexico').addEventListener('click', function () {
 document.getElementById('btnEuropa').addEventListener('click', function () {
     cargarDirectorio('Europa');
 });
+document.getElementById('btnConsultores').addEventListener('click', function () {
+    cargarResponsables();
+});
+
+function cargarResponsables(localidad) {
+    fetch(`../Controllers/consultores_ajax.php`)
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('contenidoResponsables').innerHTML = data;
+
+            // Mostrar el modal
+            let myModal = new bootstrap.Modal(document.getElementById('responsablesModal'));
+            myModal.show();
+
+            // Esperar a que el modal esté visible y luego aplicar DataTable
+            setTimeout(() => {
+                if ($.fn.DataTable.isDataTable('#tablaResponsables')) {
+                    $('#tablaResponsables').DataTable().destroy();
+                }
+                $('#tablaResponsables').DataTable({
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+                    },
+                    responsive: true
+                });
+            }, 300); // pequeño delay para asegurar que el DOM esté listo
+        })
+        .catch(err => {
+            document.getElementById('contenidoResponsables').innerHTML = 'Error al cargar los responsables.';
+        });
+}
 
 
 function cargarDirectorio(localidad) {
