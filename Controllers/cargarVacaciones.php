@@ -12,6 +12,9 @@ error_reporting(E_ALL);
 
 $conn->autocommit(true);
 
+// Asegurarse de que la columna status exista
+$conn->query("ALTER TABLE vacaciones ADD COLUMN IF NOT EXISTS status TINYINT(1) DEFAULT 1");
+
 function excelDateToMySQLDate($excelDate) {
     $timestamp = ($excelDate - 25569) * 86400;
     return gmdate("Y-m-d", $timestamp);
@@ -36,11 +39,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo_csv'])) {
         exit;
     }
 
-    
-
     if (($handle = fopen($archivo, "r")) !== false) {
         fgetcsv($handle); // Saltar encabezado
 
+        // Paso 1: Marcar todos los registros existentes como status = 0
+        $conn->query("UPDATE vacaciones SET status = 0");
+        $actualizados = $conn->affected_rows;
+
+        // Paso 2: Preparar inserción de nuevos registros con status = 1
         $stmt = $conn->prepare("INSERT INTO vacaciones (
             Resolutor_Vacaciones,
             Resolutor_Guardia,
@@ -48,21 +54,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo_csv'])) {
             Correo_Resolutor,
             Fecha_Inicio,
             Fecha_Termino,
-            Jefe_Inmediato
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            Jefe_Inmediato,
+            status
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
         if (!$stmt) {
             mostrarAlerta('error', 'Error en prepare(): ' . $conn->error);
             exit;
         }
 
-        //$logfile = fopen("inserciones_log.txt", "a");
         $exitos = 0;
         $errores = 0;
 
         while (($datos = fgetcsv($handle, 1000, ",")) !== false) {
             if (count($datos) < 7) {
-                #fwrite($logfile, "Línea con datos insuficientes: " . implode(",", $datos) . "\n");
                 $errores++;
                 continue;
             }
@@ -77,98 +82,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo_csv'])) {
                 $jefe
             ) = $datos;
 
-            // Limpieza y conversión de fechas
             $fechaInicio = trim($fechaInicio);
             $fechaFin = trim($fechaFin);
 
-            if ($fechaInicio === '') {
-                $fechaInicio = null;
-            } else {
-                $fechaInicio = is_numeric($fechaInicio) ? excelDateToMySQLDate($fechaInicio) : convertirFecha($fechaInicio);
-            }
+            $fechaInicio = ($fechaInicio === '') ? null : (is_numeric($fechaInicio) ? excelDateToMySQLDate($fechaInicio) : convertirFecha($fechaInicio));
+            $fechaFin = ($fechaFin === '') ? null : (is_numeric($fechaFin) ? excelDateToMySQLDate($fechaFin) : convertirFecha($fechaFin));
 
-            if ($fechaFin === '') {
-                $fechaFin = null;
-            } else {
-                $fechaFin = is_numeric($fechaFin) ? excelDateToMySQLDate($fechaFin) : convertirFecha($fechaFin);
-            }
+            $status = 1;
 
-            // mysqli no soporta bind_param con null directamente,
-            // por eso usamos esta técnica para pasar null:
             $stmt->bind_param(
-                "sssssss",
+                "sssssssi",
                 $resolutorVacaciones,
                 $resolutorGuardia,
                 $telefono,
                 $correo,
                 $fechaInicio,
                 $fechaFin,
-                $jefe
-            );
-
-            // Forzar valores null a mysqli con esta función:
-            // Pero bind_param no soporta nulls, entonces usamos bind_param con referencias y ajustamos
-            // para que en MySQL se inserte NULL hacemos lo siguiente:
-
-            // NOTA: La solución rápida es usar esta extensión:
-            // En este contexto, la manera más sencilla es usar 's' y pasar NULL como NULL (de PHP), pero mysqli lo convierte a ''
-            // Si quieres que sea NULL, modifica la consulta para que acepte NULL con el siguiente código:
-            // Usamos la función below para pasar NULL como NULL:
-            $params = [
-                $resolutorVacaciones,
-                $resolutorGuardia,
-                $telefono,
-                $correo,
-                $fechaInicio,
-                $fechaFin,
-                $jefe
-            ];
-
-            // Rebind parameters manualmente para forzar nulls:
-            $stmt->close();
-
-            // Nueva consulta con valores directos usando placeholders especiales para NULL:
-            $sql = "INSERT INTO vacaciones (
-                Resolutor_Vacaciones,
-                Resolutor_Guardia,
-                Telefono_Contacto_Resolutor,
-                Correo_Resolutor,
-                Fecha_Inicio,
-                Fecha_Termino,
-                Jefe_Inmediato
-            ) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-            $stmt = $conn->prepare($sql);
-
-            // Para fechas que son null, pasamos NULL directamente usando types y bind_param:
-            $stmt->bind_param(
-                "sssssss",
-                $params[0],
-                $params[1],
-                $params[2],
-                $params[3],
-                $params[4],
-                $params[5],
-                $params[6]
+                $jefe,
+                $status
             );
 
             if (!$stmt->execute()) {
-                //fwrite($logfile, "Error al insertar fila: " . implode(",", $datos) . " - " . $stmt->error . "\n");
                 $errores++;
             } else {
-                //fwrite($logfile, "Fila insertada correctamente.\n");
                 $exitos++;
             }
         }
 
         fclose($handle);
-        //fclose($logfile);
         $stmt->close();
         $conn->close();
 
-        mostrarAlerta('success', "Carga completada. Filas insertadas: $exitos. Errores: $errores.");
+        mostrarAlerta('success', "Carga completada. Filas insertadas: $exitos. Registros antiguos desactivados: $actualizados. Errores: $errores.");
         exit;
-
     } else {
         mostrarAlerta('error', 'No se pudo abrir el archivo CSV.');
         exit;
@@ -194,12 +140,12 @@ function mostrarAlerta($tipo, $mensaje) {
                 title: 'Resultado de la carga',
                 text: '<?= $mensaje ?>',
                 showConfirmButton: false,
-                timer: 2000
+                timer: 3000
             });
 
             setTimeout(function() {
                 window.location.href = '../Views/menu.php';
-            }, 2000);
+            }, 3000);
         </script>
     </body>
     </html>
