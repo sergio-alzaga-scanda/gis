@@ -25,7 +25,7 @@ function corregirCaracteres($texto) {
 }
 
 $sql = "SELECT * FROM vacaciones 
-        WHERE status = 1 
+        WHERE status = '1'
           AND (
                 Resolutor_Vacaciones <> '' 
                 OR Resolutor_Guardia <> '' 

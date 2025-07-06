@@ -11,7 +11,6 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 
-
 $conn->autocommit(true);
 
 function excelDateToMySQLDate($excelDate) {
@@ -45,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo_csv'])) {
         $conn->query("UPDATE vacaciones SET status = 0");
         $actualizados = $conn->affected_rows;
 
-        // Paso 2: Preparar inserción de nuevos registros con status = 1
+        // Paso 2: Preparar inserción con fecha_registro
         $stmt = $conn->prepare("INSERT INTO vacaciones (
             Resolutor_Vacaciones,
             Resolutor_Guardia,
@@ -54,8 +53,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo_csv'])) {
             Fecha_Inicio,
             Fecha_Termino,
             Jefe_Inmediato,
-            status
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            status,
+            fecha_creacion
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         if (!$stmt) {
             mostrarAlerta('error', 'Error en prepare(): ' . $conn->error);
@@ -88,9 +88,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo_csv'])) {
             $fechaFin = ($fechaFin === '') ? null : (is_numeric($fechaFin) ? excelDateToMySQLDate($fechaFin) : convertirFecha($fechaFin));
 
             $status = 1;
+            $fechaRegistro = date('Y-m-d H:i:s');
 
             $stmt->bind_param(
-                "sssssssi",
+                "sssssssss",
                 $resolutorVacaciones,
                 $resolutorGuardia,
                 $telefono,
@@ -98,7 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo_csv'])) {
                 $fechaInicio,
                 $fechaFin,
                 $jefe,
-                $status
+                $status,
+                $fechaRegistro
             );
 
             if (!$stmt->execute()) {
