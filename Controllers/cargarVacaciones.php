@@ -10,11 +10,7 @@ include("../Controllers/bd.php");
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Verificar si la columna 'status' ya existe antes de agregarla
-$result = $conn->query("SHOW COLUMNS FROM vacaciones LIKE 'status'");
-if ($result->num_rows === 0) {
-    $conn->query("ALTER TABLE vacaciones ADD COLUMN status TINYINT(1) DEFAULT 1");
-}
+
 
 $conn->autocommit(true);
 
