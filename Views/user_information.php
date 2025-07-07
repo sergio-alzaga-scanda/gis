@@ -19,6 +19,24 @@ if ($localidad !== '') {
     <title>Búsqueda de Empleados</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+<!-- Buttons CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css" />
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<!-- Buttons JS -->
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<!-- Dependencias para exportar Excel y PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
     <style>
         #loadingSplash {
             position: fixed;
@@ -573,11 +591,14 @@ function cargarResponsables(localidad) {
                     $('#tablaResponsables').DataTable().destroy();
                 }
                 $('#tablaResponsables').DataTable({
-                    language: {
-                        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
-                    },
-                    responsive: true
-                });
+    language: {
+        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+    },
+    dom: 'Bfrtip', // <- Esto es clave para que se muestren los botones
+    buttons: ['copy', 'csv', 'excel', 'print'],
+    responsive: true
+});
+
             }, 300); // pequeño delay para asegurar que el DOM esté listo
         })
         .catch(err => {
@@ -590,30 +611,44 @@ function cargarDirectorio(localidad) {
     fetch(`../Controllers/directorio_ajax.php?localidad=${encodeURIComponent(localidad)}`)
         .then(response => response.text())
         .then(data => {
-            document.getElementById('contenidoDirectorio').innerHTML = data;
+            const contenido = document.getElementById('contenidoDirectorio');
+            contenido.innerHTML = data;
 
-            // Mostrar el modal
-            let myModal = new bootstrap.Modal(document.getElementById('directorioModal'));
-            myModal.show();
+            const modalElement = document.getElementById('directorioModal');
+            const myModal = new bootstrap.Modal(modalElement);
 
-            // Esperar a que el modal esté visible y luego aplicar DataTable
-            setTimeout(() => {
+            // Listener para cuando el modal esté completamente visible
+            modalElement.addEventListener('shown.bs.modal', function handler() {
+                // Destruir DataTable si existe
                 if ($.fn.DataTable.isDataTable('#tablaDirectorio')) {
                     $('#tablaDirectorio').DataTable().destroy();
                 }
+                // Inicializar DataTable
+               
                 $('#tablaDirectorio').DataTable({
-                    language: {
-                        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
-                    },
-                    responsive: true
-                });
-            }, 300); // pequeño delay para asegurar que el DOM esté listo
+    language: {
+        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+    },
+    dom: 'Bfrtip', // <- Esto es clave para que se muestren los botones
+    buttons: ['copy', 'csv', 'excel', 'print'],
+    responsive: true
+});
+
+                // Remover el listener para que no se ejecute más veces
+                modalElement.removeEventListener('shown.bs.modal', handler);
+            });
+
+            myModal.show();
         })
         .catch(err => {
             document.getElementById('contenidoDirectorio').innerHTML = 'Error al cargar el directorio.';
+            console.error('Error fetching directory:', err);
         });
 }
 
+
+
 </script>
+
 </body>
 </html>

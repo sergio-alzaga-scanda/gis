@@ -29,13 +29,17 @@
                 <div class="accordion-body">
                     <h3>Vacaciones</h3>
                     <!-- Formulario de búsqueda -->
-                    <form id="buscarForm" class="d-flex align-items-center gap-2 mb-3">
-                        <label for="fecha_seleccionada" class="mb-0">Seleccione fecha y hora:</label>
-                        <select name="fecha_seleccionada" id="fecha_seleccionada" class="form-select" required style="max-width: 300px;">
-                            <option value="">--Cargando fechas--</option>
-                        </select>
-                        <button type="submit" class="btn btn-primary">Buscar</button>
-                    </form>
+                     <div style="display: flex; justify-content: flex-end;">
+  <form id="buscarForm" class="d-flex align-items-center gap-2 mb-3">
+    <h4><label for="fecha_seleccionada" class="mb-0">Historicos:</label></h4>
+    <select name="fecha_seleccionada" id="fecha_seleccionada" class="form-select" required style="max-width: 300px;">
+      <option value="">--Cargando fechas--</option>
+    </select>
+    <button type="submit" class="btn btn-dark">Buscar</button>
+  </form>
+</div>
+                    <hr style="border: none; border-top: 2px solid #000000; margin: 20px 0;">
+
 
                     <table id="tablaVacaciones" class="table table-striped">
                       <thead>
