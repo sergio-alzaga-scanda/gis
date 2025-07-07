@@ -591,14 +591,12 @@ function cargarResponsables(localidad) {
                     $('#tablaResponsables').DataTable().destroy();
                 }
                 $('#tablaResponsables').DataTable({
-    language: {
-        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
-    },
-    dom: 'Bfrtip', // <- Esto es clave para que se muestren los botones
-    buttons: ['copy', 'csv', 'excel', 'print'],
-    responsive: true
-});
-
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+                    },
+                    buttons: ['copy', 'csv', 'excel', 'print'],
+                    responsive: true
+                });
             }, 300); // pequeño delay para asegurar que el DOM esté listo
         })
         .catch(err => {
@@ -624,7 +622,13 @@ function cargarDirectorio(localidad) {
                     $('#tablaDirectorio').DataTable().destroy();
                 }
                 // Inicializar DataTable
-               
+                $('#').DataTable({
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+                    },
+                    buttons: ['copy', 'csv', 'excel', 'print'],
+                    responsive: true
+                });
                 $('#tablaDirectorio').DataTable({
     language: {
         url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
