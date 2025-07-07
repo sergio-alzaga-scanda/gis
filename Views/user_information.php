@@ -584,9 +584,7 @@ function cargarResponsables(localidad) {
                     $('#tablaResponsables').DataTable().destroy();
                 }
                 $('#tablaResponsables').DataTable({
-    language: {
-        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
-    },
+    
     dom: 'Bfrtip', // <- Esto es clave para que se muestren los botones
     buttons: ['copy', 'csv', 'excel', 'print'],
     responsive: true
@@ -619,9 +617,7 @@ function cargarDirectorio(localidad) {
                 // Inicializar DataTable
                
                 $('#tablaDirectorio').DataTable({
-    language: {
-        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
-    },
+    
     dom: 'Bfrtip', // <- Esto es clave para que se muestren los botones
     buttons: ['copy', 'csv', 'excel', 'print'],
     responsive: true
