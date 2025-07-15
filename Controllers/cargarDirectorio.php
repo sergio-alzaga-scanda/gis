@@ -111,7 +111,7 @@ function mostrarAlerta($tipo, $mensaje) {
 
             setTimeout(function() {
                 window.location.href = '../Views/menu.php';
-            }, 3000);
+            }, 2000);
         </script>
     </body>
     </html>
@@ -134,7 +134,7 @@ function mostrarResumen($exitos, $errores) {
                 title: 'Carga completada',
                 html: '✅ Filas insertadas: <b><?= $exitos ?></b><br>❌ Errores: <b><?= $errores ?></b>',
                 showConfirmButton: false,
-                timer: 2000
+                timer: 1000
             });
 
             setTimeout(function() {
