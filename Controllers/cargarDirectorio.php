@@ -106,12 +106,12 @@ function mostrarAlerta($tipo, $mensaje) {
                 title: 'Resultado de la carga',
                 text: '<?= $mensaje ?>',
                 showConfirmButton: false,
-                timer: 3000
+                timer: 1000
             });
 
             setTimeout(function() {
                 window.location.href = '../Views/menu.php';
-            }, 2000);
+            }, 1000);
         </script>
     </body>
     </html>
