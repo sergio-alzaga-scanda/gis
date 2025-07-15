@@ -1,15 +1,15 @@
 <?php
 session_start();
 if (!$_SESSION['usuario']) {
-    header("Location: ../index.php"); 
+    header("Location: ../index.php");
     exit;
 }
 
 include("../Controllers/bd.php");
 
+$conn->set_charset("utf8mb4");
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-
 $conn->autocommit(true);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo_csv'])) {
@@ -20,14 +20,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo_csv'])) {
         exit;
     }
 
-    // Limpiar tabla (ajusta a tu tabla real, por ejemplo: "grupos_soporte")
     if (!$conn->query("TRUNCATE TABLE grupos_soporte")) {
         mostrarAlerta('error', 'Error al truncar la tabla: ' . $conn->error);
         exit;
     }
 
     if (($handle = fopen($archivo, "r")) !== false) {
-        fgetcsv($handle); // Saltar encabezado
+        $encabezado = fgets($handle);
+        rewind($handle);
+
+        if (strpos($encabezado, ";") !== false) {
+            $delimitador = ";";
+        } elseif (strpos($encabezado, "\t") !== false) {
+            $delimitador = "\t";
+        } else {
+            $delimitador = ",";
+        }
+
+        fgetcsv($handle, 1000, $delimitador);
 
         $stmt = $conn->prepare("INSERT INTO grupos_soporte (
             localidad, grupo_torre, resolutores, correo, telefono,
@@ -39,43 +49,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo_csv'])) {
             exit;
         }
 
-        //$logfile = fopen("inserciones_log.txt", "a");
         $exitos = 0;
         $errores = 0;
 
-        while (($datos = fgetcsv($handle, 1000, ";")) !== false)
- {
+        while (($datos = fgetcsv($handle, 1000, $delimitador)) !== false) {
             if (count($datos) < 7) {
-                #fwrite($logfile, "Línea con datos insuficientes: " . implode(",", $datos) . "\n");
                 $errores++;
                 continue;
             }
 
-            $localidad            = $datos[0];
-            $grupo_torre          = $datos[1];
-            $resolutores          = $datos[2];
-            $correo               = $datos[3];
-            $telefono             = $datos[4];
-            $grupo_distribucion   = $datos[5];
-            $gerente_responsable  = $datos[6];
+            $localidad           = mb_convert_encoding(trim($datos[0]), 'UTF-8', 'Windows-1252');
+            $grupo_torre         = mb_convert_encoding(trim($datos[1]), 'UTF-8', 'Windows-1252');
+            $resolutores         = mb_convert_encoding(trim($datos[2]), 'UTF-8', 'Windows-1252');
+            $correo              = mb_convert_encoding(trim($datos[3]), 'UTF-8', 'Windows-1252');
+            $telefono            = mb_convert_encoding(trim($datos[4]), 'UTF-8', 'Windows-1252');
+            $grupo_distribucion  = mb_convert_encoding(trim($datos[5]), 'UTF-8', 'Windows-1252');
+            $gerente_responsable = mb_convert_encoding(trim($datos[6]), 'UTF-8', 'Windows-1252');
 
             $stmt->bind_param("sssssss", $localidad, $grupo_torre, $resolutores, $correo, $telefono, $grupo_distribucion, $gerente_responsable);
 
             if (!$stmt->execute()) {
-                #fwrite($logfile, "Error al insertar fila: " . implode(",", $datos) . " - " . $stmt->error . "\n");
                 $errores++;
             } else {
-                #fwrite($logfile, "Fila insertada correctamente.\n");
                 $exitos++;
             }
         }
 
         fclose($handle);
-        #fclose($logfile);
         $stmt->close();
         $conn->close();
 
-        mostrarAlerta('success', "Carga completada. Filas insertadas: $exitos. Errores: $errores.");
+        mostrarResumen($exitos, $errores);
         exit;
     } else {
         mostrarAlerta('error', 'No se pudo abrir el archivo CSV.');
@@ -102,12 +106,40 @@ function mostrarAlerta($tipo, $mensaje) {
                 title: 'Resultado de la carga',
                 text: '<?= $mensaje ?>',
                 showConfirmButton: false,
+                timer: 3000
+            });
+
+            setTimeout(function() {
+                window.location.href = '../Views/menu.php';
+            }, 3000);
+        </script>
+    </body>
+    </html>
+    <?php
+}
+
+function mostrarResumen($exitos, $errores) {
+    ?>
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Resumen</title>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </head>
+    <body>
+        <script>
+            Swal.fire({
+                icon: 'info',
+                title: 'Carga completada',
+                html: '✅ Filas insertadas: <b><?= $exitos ?></b><br>❌ Errores: <b><?= $errores ?></b>',
+                showConfirmButton: false,
                 timer: 2000
             });
 
             setTimeout(function() {
                 window.location.href = '../Views/menu.php';
-            }, 2000);
+            }, 4000);
         </script>
     </body>
     </html>
