@@ -12,7 +12,7 @@ include("bd.php");
 $query = "SELECT 
     Resolutor_Vacaciones, Resolutor_Guardia, Telefono_Contacto_Resolutor,
     Correo_Resolutor, Fecha_Inicio, Fecha_Termino,
-    Jefe_Inmediato, fecha_registro
+    Jefe_Inmediato, fecha_creacion
     FROM vacaciones";
 
 $resultado = $conn->query($query);
@@ -30,7 +30,7 @@ fwrite($fp, "\xEF\xBB\xBF");
 $encabezados = [
     "Resolutor_Vacaciones", "Resolutor_Guardia", "Telefono_Contacto_Resolutor",
     "Correo_Resolutor", "Fecha_Inicio", "Fecha_Termino",
-    "Jefe_Inmediato", "fecha_registro"
+    "Jefe_Inmediato", "fecha_creacion"
 ];
 
 fputcsv($fp, $encabezados, ",");
