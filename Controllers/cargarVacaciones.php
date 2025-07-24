@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo_csv'])) {
             Fecha_Termino,
             Jefe_Inmediato,
             status,
-            fecha_creacion
+            fecha_registro
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         if (!$stmt) {
