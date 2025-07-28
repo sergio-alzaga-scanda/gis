@@ -93,30 +93,33 @@ if ($localidad !== '') {
 </div>
 <div class="container mt-5">
     <!-- Sección de Búsqueda de Categorías -->
-<div style="background-color: #b0eaf5;  padding: 10px;">
-    <h2 class="mt-4">Búsqueda de Categorías</h2>
-    <form id="formBusquedaCategoria" class="mb-4 d-flex" role="search">
-        <input type="text" class="form-control me-2" id="nombreCategoria" placeholder="Buscar categoría (es/en)" required>
-        <button type="submit" class="btn btn-dark">Buscar</button>
-    </form>
+    <div style="background-color: #b0eaf5; padding: 10px;">
+        <h2 class="mt-4">Búsqueda de Categorías</h2>
+        <form id="formBusquedaCategoria" class="mb-4 d-flex" role="search">
+            <input type="text" class="form-control me-2" id="nombreCategoria" placeholder="Buscar categoría (es/en)" required>
+            <button type="submit" class="btn btn-dark">Buscar</button>
+        </form>
 
-    <table class="table table-striped" id="tablaResultadosCategorias">
-        <thead>
-            <tr>
-                <th>Categoría ES</th><th>Categoría EN</th>
-                <th>Grupo resolutor</th>
-                <th>Severidad</th>
-                <th>Resolutor 1</th>
-                <th>Resolutor 2</th>
-                <th>Resolutor 3</th>
-                <th>Servicio</th>
-                		
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+        <div style="max-height: 300px; overflow: auto;">
+            <table class="table table-striped" id="tablaResultadosCategorias">
+                <thead>
+                    <tr>
+                        <th>Categoría ES</th>
+                        <th>Categoría EN</th>
+                        <th>Grupo resolutor</th>
+                        <th>Severidad</th>
+                        <th>Resolutor 1</th>
+                        <th>Resolutor 2</th>
+                        <th>Resolutor 3</th>
+                        <th>Servicio</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
 </div>
-</div>
+
 
 
 
