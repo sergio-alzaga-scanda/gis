@@ -28,8 +28,8 @@ if ($usuario !== $validUser || $password !== $validPass) {
 // CONEXIÓN MYSQL
 $host = "localhost";
 $user = "root";
-$pass = "";
-$dbname = "tu_base_de_datos"; // <-- CAMBIA ESTO
+$pass = "Melco154.,";
+$dbname = "gis_db"; // <-- CAMBIA ESTO
 
 $conn = new mysqli($host, $user, $pass, $dbname);
 
