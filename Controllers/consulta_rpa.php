@@ -77,11 +77,11 @@ $row = $result->fetch_assoc();
 
 // ========== RESPUESTA ==========
 echo json_encode([
-        "id" => (int)$row["id"],
+       
         "periodo_busqueda" => $row["periodo_busqueda"],
         "ejecucion_activa" => (bool)$row["ejecucion_activa"],
-        "hora_ejecucion" => $row["hora_ejecucion"],
-        "fecha_actualizacion" => $row["fecha_actualizacion"]
+        "hora_ejecucion" => $row["hora_ejecucion"]
+    
     
 ]);
 
