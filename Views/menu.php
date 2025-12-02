@@ -53,6 +53,7 @@ if ($_SESSION['tipo_usuario'] =! 1) {
     <a href="update_user_information.php" class="btn btn-secondary text-white btn-lg">Empleados</a>
     <a href="update_resolutor_information.php" class="btn btn-dark text-white btn-lg">Resolutores</a>
     <a href="cargarVacaciones.php" class="btn btn-secondary text-white btn-lg">Registro de Vacaciones</a>
+    <a href="rpa.php" class="btn btn-secondary text-white btn-lg">Configuración RPA</a>
 <?php endif; ?>
 
 
