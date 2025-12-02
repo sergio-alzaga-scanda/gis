@@ -1,22 +1,35 @@
 <?php
-// API: obtener configuración de búsqueda
+// ========== HEADERS ==========
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Allow-Methods: POST, GET");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-// CREDENCIALES DEL API
+// ========== CREDENCIALES VALIDAS ==========
 $validUser = "Beto2025";
 $validPass = "D3v_2025";
 
-// LEER ENTRADA (JSON o POST normal)
+// ========== LECTURA DE ENTRADA JSON ==========
 $raw = file_get_contents("php://input");
 $input = json_decode($raw, true);
 
-$usuario = $input["usuario"] ?? ($_POST["usuario"] ?? "");
-$password = $input["password"] ?? ($_POST["password"] ?? "");
+// Entrada por JSON o POST normal
+$usuario = $input["usuario"] ?? ($_POST["usuario"] ?? null);
+$password = $input["password"] ?? ($_POST["password"] ?? null);
 
-// VALIDAR CREDENCIALES
+// ========== LECTURA DE BASIC AUTH ==========
+$basicUser = $_SERVER["PHP_AUTH_USER"] ?? null;
+$basicPass = $_SERVER["PHP_AUTH_PW"] ?? null;
+
+// Si viene Basic Auth, tiene prioridad
+if ($basicUser !== null && $basicPass !== null) {
+    $usuario = $basicUser;
+    $password = $basicPass;
+}
+
+// ========== VALIDACIÓN DE CREDENCIALES ==========
 if ($usuario !== $validUser || $password !== $validPass) {
+    http_response_code(401);
     echo json_encode([
         "status" => "error",
         "code" => 401,
@@ -25,15 +38,16 @@ if ($usuario !== $validUser || $password !== $validPass) {
     exit;
 }
 
-// CONEXIÓN MYSQL
+// ========== CONEXIÓN A MYSQL ==========
 $host = "localhost";
 $user = "root";
 $pass = "Melco154.,";
-$dbname = "gis_db"; // <-- CAMBIA ESTO
+$dbname = "gis_db";
 
 $conn = new mysqli($host, $user, $pass, $dbname);
 
 if ($conn->connect_error) {
+    http_response_code(500);
     echo json_encode([
         "status" => "error",
         "code" => 500,
@@ -42,14 +56,15 @@ if ($conn->connect_error) {
     exit;
 }
 
-// CONSULTA
-$query = "SELECT id, periodo_busqueda, ejecucion_activa, hora_ejecucion, fecha_actualizacion 
+// ========== CONSULTA ==========
+$query = "SELECT id, periodo_busqueda, ejecucion_activa, hora_ejecucion, fecha_actualizacion
           FROM configuracion_busqueda 
           WHERE id = 1 LIMIT 1";
 
 $result = $conn->query($query);
 
-if ($result->num_rows === 0) {
+if (!$result || $result->num_rows === 0) {
+    http_response_code(404);
     echo json_encode([
         "status" => "error",
         "code" => 404,
@@ -60,7 +75,7 @@ if ($result->num_rows === 0) {
 
 $row = $result->fetch_assoc();
 
-// RESPUESTA JSON
+// ========== RESPUESTA ==========
 echo json_encode([
     "status" => "success",
     "code" => 200,
